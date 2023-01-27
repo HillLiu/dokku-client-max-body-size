@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-
+#!/usr/bin/env bash
 set -eo pipefail
 [[ $DOKKU_TRACE ]] && set -x
 
@@ -15,24 +14,21 @@ CONFIG_FOLDER="$DOKKU_ROOT/$APP/nginx.conf.d"
 
 CONFIG_FILE="$CONFIG_FOLDER/client-max-body-size.conf"
 
-GLOBAL_CONFIG_FILE="/etc/nginx/conf.d/client-max-body-size.conf"
-
 [[ -d "$CONFIG_FOLDER" ]] || mkdir "$CONFIG_FOLDER"
 
 echo "-----> Setting client-max-body-size"
 echo "Writing to $CONFIG_FILE"
 echo "# auotgen by client-max-body-size plugin" > $CONFIG_FILE
-echo "# auotgen by client-max-body-size plugin" > $GLOBAL_CONFIG_FILE
 
-local GLOBAL_VAL=$(config_get "--global" client_max_body_size)
-local LOCAL_VAL=$(config_get "$APP" client_max_body_size)
+GLOBAL_VAL=$(config_get "--global" client_max_body_size) || true
+LOCAL_VAL=$(config_get "$APP" client_max_body_size) || true
 
-if [ -z "$GLOBAL_VAL" ]; then
-  echo "client_max_body_size $GLOBAL_VAL;" >> $GLOBAL_CONFIG_FILE
-fi
+echo "Global: ${GLOBAL_VAL}, Local: ${LOCAL_VAL}"
 
-if [ -z "$LOCAL_VAL" ]; then
+if [ ! -z "$LOCAL_VAL" ]; then
   echo "client_max_body_size $LOCAL_VAL;" >> $CONFIG_FILE
+elif [ ! -z "$GLOBAL_VAL" ]; then
+  echo "client_max_body_size $GLOBAL_VAL;" >> $CONFIG_FILE
 fi
 
 chown dokku:dokku $CONFIG_FILE
