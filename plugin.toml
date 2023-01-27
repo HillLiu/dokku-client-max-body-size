@@ -1,0 +1,4 @@
+[plugin]
+description = "Dokku plugin for setting client_max_body_size"
+version = "0.0.1"
+[plugin.config]
