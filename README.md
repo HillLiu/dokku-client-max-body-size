@@ -3,7 +3,7 @@
 ## Install
 ```
 sudo dokku plugin:uninstall client-max-body-size \
-&& sudo dokku plugin:install https://github.com/hillliu/dokku-client-max-body-size.git
+  || sudo dokku plugin:install https://github.com/hillliu/dokku-client-max-body-size.git
 ```
 
 ## Set global
